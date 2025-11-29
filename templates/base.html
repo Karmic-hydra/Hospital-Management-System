@@ -8,46 +8,66 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #0dcaf0;
+            /* Calming green palette */
+            --primary-color: #5DAA5D;
+            --primary-light: #8CCB8C;
+            --primary-dark: #3B8A3B;
+            --accent-color: #B2E0B2;
+            --dark-green: #2A6A2A;
+            
+            /* Soothing neutral palette */
+            --beige-light: #EAE3D2;
+            --beige: #D1C6B8;
+            --taupe-light: #B7A99A;
+            --taupe: #A18C7A;
+            --brown: #8B7B6A;
+            
+            /* Status colors using calming tones */
+            --success-color: #5DAA5D;
+            --danger-color: #A18C7A;
+            --warning-color: #D1C6B8;
+            --info-color: #8CCB8C;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #EAE3D2 0%, #D1C6B8 100%);
+            min-height: 100vh;
         }
         
         .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+            background: linear-gradient(135deg, #5DAA5D 0%, #3B8A3B 100%) !important;
+            box-shadow: 0 4px 12px rgba(93, 170, 93, 0.2);
+            backdrop-filter: blur(10px);
         }
         
         .sidebar {
             min-height: calc(100vh - 56px);
-            background-color: #fff;
-            box-shadow: 2px 0 4px rgba(0,0,0,.1);
+            background: linear-gradient(180deg, #ffffff 0%, #f8f6f0 100%);
+            box-shadow: 4px 0 16px rgba(161, 140, 122, 0.1);
             padding: 20px 0;
+            border-right: 1px solid rgba(161, 140, 122, 0.1);
         }
         
         .sidebar .nav-link {
-            color: #333;
+            color: #8B7B6A;
             padding: 12px 20px;
             margin: 5px 10px;
-            border-radius: 8px;
-            transition: all 0.3s;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
         
         .sidebar .nav-link:hover {
-            background-color: #e9ecef;
-            color: var(--primary-color);
+            background: linear-gradient(135deg, #B2E0B2 0%, #8CCB8C 100%);
+            color: #2A6A2A;
+            transform: translateX(5px);
         }
         
         .sidebar .nav-link.active {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, #5DAA5D 0%, #3B8A3B 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(93, 170, 93, 0.3);
         }
         
         .sidebar .nav-link i {
@@ -57,102 +77,138 @@
         
         .card {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(161, 140, 122, 0.15);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
         
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 16px rgba(0,0,0,.12);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 32px rgba(93, 170, 93, 0.2);
         }
         
         .card-header {
-            background-color: #fff;
-            border-bottom: 2px solid #f0f0f0;
+            background: linear-gradient(135deg, #B2E0B2 0%, #8CCB8C 100%);
+            border-bottom: none;
+            color: #2A6A2A;
             font-weight: 600;
             padding: 15px 20px;
         }
         
         .stat-card {
             padding: 25px;
-            border-left: 4px solid var(--primary-color);
+            border-left: 5px solid var(--primary-color);
+            background: linear-gradient(135deg, rgba(178, 224, 178, 0.1) 0%, rgba(140, 203, 140, 0.1) 100%);
         }
         
         .stat-card h3 {
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 5px;
+            color: var(--primary-dark);
         }
         
         .stat-card p {
-            color: #6c757d;
+            color: #8B7B6A;
             margin-bottom: 0;
         }
         
         .btn {
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 10px 20px;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
         
         .btn-primary {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, #5DAA5D 0%, #3B8A3B 100%);
             border: none;
+            box-shadow: 0 4px 12px rgba(93, 170, 93, 0.3);
         }
         
         .btn-primary:hover {
-            background-color: #0b5ed7;
+            background: linear-gradient(135deg, #3B8A3B 0%, #2A6A2A 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(13,110,253,.3);
+            box-shadow: 0 6px 20px rgba(93, 170, 93, 0.4);
         }
         
         .table {
-            background-color: white;
-            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(161, 140, 122, 0.1);
         }
         
         .table thead {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #B2E0B2 0%, #8CCB8C 100%);
+            color: #2A6A2A;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(178, 224, 178, 0.1);
         }
         
         .badge {
             padding: 6px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 500;
         }
         
         .badge-booked {
-            background-color: #0dcaf0;
+            background: linear-gradient(135deg, #8CCB8C 0%, #5DAA5D 100%);
             color: white;
         }
         
         .badge-completed {
-            background-color: #198754;
+            background: linear-gradient(135deg, #5DAA5D 0%, #3B8A3B 100%);
             color: white;
         }
         
         .badge-cancelled {
-            background-color: #dc3545;
+            background: linear-gradient(135deg, #B7A99A 0%, #A18C7A 100%);
             color: white;
         }
         
         .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            border: 2px solid rgba(161, 140, 122, 0.2);
             padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
         }
         
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+            box-shadow: 0 0 0 0.2rem rgba(93, 170, 93, 0.25);
+            background-color: white;
         }
         
         .alert {
-            border-radius: 8px;
+            border-radius: 12px;
             border: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(93, 170, 93, 0.9) 0%, rgba(59, 138, 59, 0.9) 100%);
+            color: white;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(183, 169, 154, 0.9) 0%, rgba(161, 140, 122, 0.9) 100%);
+            color: white;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, rgba(140, 203, 140, 0.9) 0%, rgba(93, 170, 93, 0.9) 100%);
+            color: white;
         }
         
         .content-wrapper {

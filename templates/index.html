@@ -2,41 +2,103 @@
 
 {% block title %}Home - Hospital Management System{% endblock %}
 
+{% block extra_css %}
+<style>
+    .hero-section {
+        padding: 60px 0;
+    }
+    
+    .hero-title {
+        color: #3B8A3B;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(161, 140, 122, 0.1);
+    }
+    
+    .hero-subtitle {
+        color: #8B7B6A;
+        font-size: 1.3rem;
+    }
+    
+    .feature-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .feature-card:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .icon-primary { color: #5DAA5D; }
+    .icon-success { color: #3B8A3B; }
+    .icon-accent { color: #8CCB8C; }
+    .icon-taupe { color: #A18C7A; }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #3B8A3B 0%, #2A6A2A 100%);
+        border: none;
+        box-shadow: 0 4px 12px rgba(59, 138, 59, 0.3);
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #2A6A2A 0%, #1a4a1a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 138, 59, 0.4);
+    }
+    
+    .btn-warning {
+        background: linear-gradient(135deg, #D1C6B8 0%, #B7A99A 100%);
+        border: none;
+        color: #2A6A2A;
+        box-shadow: 0 4px 12px rgba(161, 140, 122, 0.3);
+        font-weight: 600;
+    }
+    
+    .btn-warning:hover {
+        background: linear-gradient(135deg, #B7A99A 0%, #A18C7A 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(161, 140, 122, 0.4);
+        color: #2A6A2A;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-12 text-center mt-5">
-        <h1 class="display-3 mb-4"><i class="bi bi-hospital text-primary"></i> Welcome to Hospital Management System</h1>
-        <p class="lead text-muted mb-5">Efficient healthcare management for patients, doctors, and administrators</p>
+<div class="row hero-section">
+    <div class="col-12 text-center">
+        <h1 class="display-3 mb-4 hero-title">
+            <i class="bi bi-hospital icon-primary"></i> Welcome to Hospital Management System
+        </h1>
+        <p class="lead hero-subtitle mb-5">Efficient healthcare management for patients, doctors, and administrators</p>
         
         <div class="row justify-content-center mt-5">
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 feature-card">
                     <div class="card-body text-center p-4">
-                        <i class="bi bi-person-plus display-1 text-primary mb-3"></i>
-                        <h3>For Patients</h3>
-                        <p class="text-muted">Book appointments, view medical history, and manage your health records</p>
+                        <i class="bi bi-person-plus display-1 icon-primary mb-3"></i>
+                        <h3 style="color: #3B8A3B;">For Patients</h3>
+                        <p style="color: #8B7B6A;">Book appointments, view medical history, and manage your health records</p>
                         <a href="{{ url_for('auth.register') }}" class="btn btn-primary mt-3">Register Now</a>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 feature-card">
                     <div class="card-body text-center p-4">
-                        <i class="bi bi-clipboard2-pulse display-1 text-success mb-3"></i>
-                        <h3>For Doctors</h3>
-                        <p class="text-muted">Manage appointments, patient records, and provide quality healthcare</p>
+                        <i class="bi bi-clipboard2-pulse display-1 icon-success mb-3"></i>
+                        <h3 style="color: #3B8A3B;">For Doctors</h3>
+                        <p style="color: #8B7B6A;">Manage appointments, patient records, and provide quality healthcare</p>
                         <a href="{{ url_for('auth.login') }}" class="btn btn-success mt-3">Doctor Login</a>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 feature-card">
                     <div class="card-body text-center p-4">
-                        <i class="bi bi-gear display-1 text-warning mb-3"></i>
-                        <h3>For Admins</h3>
-                        <p class="text-muted">Manage hospital operations, doctors, patients, and appointments</p>
+                        <i class="bi bi-gear display-1 icon-taupe mb-3"></i>
+                        <h3 style="color: #3B8A3B;">For Admins</h3>
+                        <p style="color: #8B7B6A;">Manage hospital operations, doctors, patients, and appointments</p>
                         <a href="{{ url_for('auth.login') }}" class="btn btn-warning mt-3">Admin Login</a>
                     </div>
                 </div>
@@ -45,20 +107,20 @@
         
         <div class="row mt-5">
             <div class="col-md-3 text-center mb-4">
-                <i class="bi bi-clock-history display-4 text-info"></i>
-                <h5 class="mt-3">24/7 Service</h5>
+                <i class="bi bi-clock-history display-4 icon-accent"></i>
+                <h5 class="mt-3" style="color: #3B8A3B;">24/7 Service</h5>
             </div>
             <div class="col-md-3 text-center mb-4">
-                <i class="bi bi-shield-check display-4 text-success"></i>
-                <h5 class="mt-3">Secure & Private</h5>
+                <i class="bi bi-shield-check display-4 icon-success"></i>
+                <h5 class="mt-3" style="color: #3B8A3B;">Secure & Private</h5>
             </div>
             <div class="col-md-3 text-center mb-4">
-                <i class="bi bi-calendar-check display-4 text-primary"></i>
-                <h5 class="mt-3">Easy Booking</h5>
+                <i class="bi bi-calendar-check display-4 icon-primary"></i>
+                <h5 class="mt-3" style="color: #3B8A3B;">Easy Booking</h5>
             </div>
             <div class="col-md-3 text-center mb-4">
-                <i class="bi bi-people display-4 text-danger"></i>
-                <h5 class="mt-3">Expert Doctors</h5>
+                <i class="bi bi-people display-4 icon-taupe"></i>
+                <h5 class="mt-3" style="color: #3B8A3B;">Expert Doctors</h5>
             </div>
         </div>
     </div>

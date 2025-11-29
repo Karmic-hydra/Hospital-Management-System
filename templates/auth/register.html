@@ -2,10 +2,33 @@
 
 {% block title %}Register - Hospital Management System{% endblock %}
 
+{% block extra_css %}
+<style>
+    .register-card {
+        box-shadow: 0 8px 32px rgba(93, 170, 93, 0.2) !important;
+    }
+    .register-card h2 {
+        color: #3B8A3B;
+    }
+    .register-card .form-label {
+        color: #8B7B6A;
+        font-weight: 500;
+    }
+    .register-card a {
+        color: #5DAA5D;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .register-card a:hover {
+        color: #3B8A3B;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-4 mb-5">
-    <div class="col-md-8">
-        <div class="card">
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card register-card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4"><i class="bi bi-person-plus"></i> Patient Registration</h2>
                 
