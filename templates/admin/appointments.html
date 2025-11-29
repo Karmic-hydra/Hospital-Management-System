@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Appointments Management{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-calendar-check"></i> Appointments Management</h2></div>
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <select class="form-select" name="status">
+                    <option value="">All Status</option>
+                    <option value="Booked" {% if request.args.get('status') == 'Booked' %}selected{% endif %}>Booked</option>
+                    <option value="Completed" {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
+                    <option value="Cancelled" {% if request.args.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="date" class="form-control" name="date" value="{{ request.args.get('date', '') }}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        {% if appointments %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>ID</th><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Status</th><th>Reason</th></tr>
+                </thead>
+                <tbody>
+                    {% for apt in appointments %}
+                    <tr>
+                        <td>{{ apt.id }}</td>
+                        <td>{{ apt.appointment_date.strftime('%d %b %Y') }}</td>
+                        <td>{{ apt.appointment_time.strftime('%I:%M %p') }}</td>
+                        <td>{{ apt.patient.full_name }}</td>
+                        <td>{{ apt.doctor.full_name }}</td>
+                        <td><span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span></td>
+                        <td>{{ apt.reason[:30] + '...' if apt.reason and apt.reason|length > 30 else (apt.reason or 'N/A') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No appointments found</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Doctor{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-pencil"></i> Edit Doctor</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    <h5 class="mb-3">Doctor Information</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ doctor.full_name }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ doctor.user.email }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="specialization" class="form-label">Specialization <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="specialization" name="specialization" value="{{ doctor.specialization }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="department_id" class="form-label">Department <span class="text-danger">*</span></label>
+                            <select class="form-select" id="department_id" name="department_id" required>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}" {% if dept.id == doctor.department_id %}selected{% endif %}>{{ dept.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ doctor.phone or '' }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="qualification" class="form-label">Qualification</label>
+                            <input type="text" class="form-control" id="qualification" name="qualification" value="{{ doctor.qualification or '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="experience_years" class="form-label">Experience (Years)</label>
+                            <input type="number" class="form-control" id="experience_years" name="experience_years" value="{{ doctor.experience_years or '' }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="consultation_fee" class="form-label">Consultation Fee (₹)</label>
+                            <input type="number" class="form-control" id="consultation_fee" name="consultation_fee" value="{{ doctor.consultation_fee or '' }}" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Update Doctor</button>
+                        <a href="{{ url_for('admin.doctors') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

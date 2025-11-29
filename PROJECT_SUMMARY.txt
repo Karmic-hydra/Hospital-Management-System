@@ -1,0 +1,154 @@
+Description
+This project is a multi-user Hospital Management System where users can register as Admin, Doctor, or Patient. Patients can search for doctors, book appointments, and view their medical history. Doctors can manage their availability, view assigned appointments, and add treatment details. Admins can manage doctors, patients, and view all appointments.
+
+Technologies used
+Database:
+SQLite
+It is used for the Database to store all the information about Users, Doctors, Patients, Appointments, Departments, and Treatments.
+
+Backend Technologies:
+Flask
+It is used for building the application and to start the app server.
+Flask-SQLAlchemy
+It is used for Database management and CRUD operations. 
+Flask-Login
+It is used for user authentication and to keep the user logged in using the session and to logged out.
+Werkzeug.security
+It is used for securely hashing and verifying passwords during login and registration.
+
+Frontend Technologies:
+Jinja2
+It is used for generating dynamic HTML templates using the data received from flask server.
+CSS
+It is used to apply custom styling to some components.
+Bootstrap 5
+It is used to make the frontend responsive and use predefined bootstrap components for forms, buttons, cards, and navigation.
+
+DB Schema Design
+
+1. Users Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - username: VARCHAR(80) NOT NULL [UNIQUE]
+   - email: VARCHAR(120) NOT NULL [UNIQUE]
+   - password_hash: VARCHAR(255) NOT NULL
+   - role: VARCHAR(20) NOT NULL
+   - created_at: DATETIME
+   - is_active: BOOLEAN
+
+2. Departments Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - name: VARCHAR(100) NOT NULL [UNIQUE]
+   - description: TEXT
+   - created_at: DATETIME
+
+3. Doctors Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - user_id: INTEGER NOT NULL [FOREIGN KEY → Users.id]
+   - department_id: INTEGER NOT NULL [FOREIGN KEY → Departments.id]
+   - full_name: VARCHAR(100) NOT NULL
+   - specialization: VARCHAR(100) NOT NULL
+   - phone: VARCHAR(15)
+   - qualification: VARCHAR(200)
+   - experience_years: INTEGER
+   - consultation_fee: FLOAT
+   - created_at: DATETIME
+
+4. Patients Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - user_id: INTEGER NOT NULL [FOREIGN KEY → Users.id]
+   - full_name: VARCHAR(100) NOT NULL
+   - date_of_birth: DATE
+   - gender: VARCHAR(10)
+   - phone: VARCHAR(15) NOT NULL
+   - address: TEXT
+   - blood_group: VARCHAR(5)
+   - emergency_contact: VARCHAR(15)
+   - medical_history: TEXT
+   - created_at: DATETIME
+
+5. Doctor Availability Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - doctor_id: INTEGER NOT NULL [FOREIGN KEY → Doctors.id]
+   - date: DATE NOT NULL
+   - start_time: TIME NOT NULL
+   - end_time: TIME NOT NULL
+   - is_available: BOOLEAN
+
+6. Appointments Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - patient_id: INTEGER NOT NULL [FOREIGN KEY → Patients.id]
+   - doctor_id: INTEGER NOT NULL [FOREIGN KEY → Doctors.id]
+   - appointment_date: DATE NOT NULL
+   - appointment_time: TIME NOT NULL
+   - status: VARCHAR(20) [DEFAULT: 'Booked']
+   - reason: TEXT
+   - created_at: DATETIME
+   - updated_at: DATETIME
+
+7. Treatments Table
+   - id: INTEGER [PRIMARY KEY] NOT NULL
+   - appointment_id: INTEGER NOT NULL [FOREIGN KEY → Appointments.id]
+   - diagnosis: TEXT NOT NULL
+   - prescription: TEXT
+   - notes: TEXT
+   - follow_up_date: DATE
+   - created_at: DATETIME
+   - updated_at: DATETIME
+
+Architecture and Features
+/MAD1Project_24f3005068      (This is root folder)
+│
+├──────/routes             
+│           ├────admin.py
+│           ├────doctor.py
+│           ├────patient.py
+│           ├────auth.py
+│           └────api.py
+├──────/templates
+│           ├────/admin
+│           ├────/doctor
+│           ├────/patient
+│           ├────/auth
+│           ├────base.html
+│           └────index.html
+├──────/instance
+│           └────hospital.db
+├──────app.py
+├──────models.py
+├──────extensions.py
+├──────utils.py
+├──────config.py
+├──────README.md
+└──────requirements.txt    
+
+Features
+User Registration and Login 
+Flask-Login is used to keep the user logged in using sessions and Werkzeug.security is used to hash the password during registration to securely store them in the database. Users can register as Admin, Doctor, or Patient.
+
+Admin Dashboard and Management
+The admin can view dashboard with statistics on total doctors, patients, and appointments. They can add new doctors with department assignments, edit doctor profiles, and manage patient information. Admins can view and manage all appointments in the system and search for specific patients or doctors.
+
+Doctor Dashboard and Appointment Management  
+Doctors can view their dashboard showing today's and week's appointments. They can mark appointments as completed and add diagnosis, prescriptions, and treatment notes. Doctors can manage their availability for the next 7 days and view patient medical history.
+
+Patient Dashboard and Appointment Booking
+Patients can search for doctors by specialization and view available doctors with their profiles. They can book appointments with available doctors on specific dates and times. Patients can view their appointment history, cancel booked appointments, and access their complete medical history with diagnoses and prescriptions.
+
+RESTful API
+API endpoints are available for all major operations including appointments, doctors, and patients management, allowing integration with other systems.
+
+Appointment Conflict Prevention
+The system checks for existing appointments at the same date and time for both doctor and patient before allowing a new booking, ensuring no scheduling conflicts occur.
+
+Validations
+Frontend Validation
+HTML5 form validation is used for required fields, email format, phone numbers, and date inputs to provide immediate feedback to users.
+
+Backend Validation
+Flask-SQLAlchemy constraints and custom validation functions are used to prevent duplicate usernames/emails, validate appointment conflicts, and ensure data integrity before database operations.
+
+Security Features
+Password hashing using Werkzeug ensures passwords are never stored in plain text. Flask-Login session management keeps users authenticated securely. Role-based access control decorators prevent unauthorized access to admin and doctor functionalities.
+
+Styling & Responsive Design
+Bootstrap 5's predefined responsive elements are used to ensure better viewing experience across all device sizes with modern UI components.

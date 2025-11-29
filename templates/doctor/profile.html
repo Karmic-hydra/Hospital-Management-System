@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-person"></i> My Profile</h2></div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Dr. {{ doctor.full_name }}</h5>
+                <p class="text-muted">{{ doctor.specialization }} | {{ doctor.department.name }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Update Profile</h5></div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" name="phone" value="{{ doctor.phone or '' }}" pattern="[0-9]{10}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Qualification</label>
+                        <input type="text" class="form-control" name="qualification" value="{{ doctor.qualification or '' }}" placeholder="e.g., MBBS, MD">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><h6 class="mb-0">Account Information</h6></div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Username:</strong><br>{{ doctor.user.username }}</li>
+                <li class="list-group-item"><strong>Email:</strong><br>{{ doctor.user.email }}</li>
+                <li class="list-group-item"><strong>Experience:</strong><br>{{ doctor.experience_years or 'N/A' }} years</li>
+                <li class="list-group-item"><strong>Consultation Fee:</strong><br>₹{{ doctor.consultation_fee or 'N/A' }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Complete Appointment{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-clipboard-check"></i> Complete Appointment</h2></div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6><strong>Patient:</strong> {{ appointment.patient.full_name }}</h6>
+                <p class="text-muted mb-0">{{ appointment.appointment_date.strftime('%d %B %Y') }} at {{ appointment.appointment_time.strftime('%I:%M %p') }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Diagnosis <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="diagnosis" rows="4" required placeholder="Enter patient diagnosis..."></textarea>
+                        <div class="invalid-feedback">Please enter the diagnosis.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prescription</label>
+                        <textarea class="form-control" name="prescription" rows="4" placeholder="Enter prescribed medicines and dosage..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Additional Notes</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="Any additional notes or recommendations..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Follow-up Date (Optional)</label>
+                        <input type="date" class="form-control" name="follow_up_date" min="{{ (appointment.appointment_date + timedelta(days=1)).isoformat() if appointment.appointment_date else '' }}">
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-success">Complete Appointment</button>
+                        <a href="{{ url_for('doctor.view_appointment', appointment_id=appointment.id) }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('form')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}View Appointment{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-calendar-check"></i> Appointment Details</h2></div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Appointment Information</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>Date:</strong><p>{{ appointment.appointment_date.strftime('%d %B %Y') }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Time:</strong><p>{{ appointment.appointment_time.strftime('%I:%M %p') }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Status:</strong><p><span class="badge badge-{{ appointment.status.lower() }}">{{ appointment.status }}</span></p>
+                    </div>
+                    <div class="col-md-12">
+                        <strong>Reason for Visit:</strong><p>{{ appointment.reason or 'Not specified' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if appointment.treatment %}
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Treatment Details</h5></div>
+            <div class="card-body">
+                <div class="mb-3"><strong>Diagnosis:</strong><p>{{ appointment.treatment.diagnosis }}</p></div>
+                <div class="mb-3"><strong>Prescription:</strong><p>{{ appointment.treatment.prescription or 'None' }}</p></div>
+                <div class="mb-3"><strong>Notes:</strong><p>{{ appointment.treatment.notes or 'None' }}</p></div>
+                {% if appointment.treatment.follow_up_date %}
+                <div class="mb-3"><strong>Follow-up Date:</strong><p>{{ appointment.treatment.follow_up_date.strftime('%d %B %Y') }}</p></div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% if appointment.status == 'Booked' %}
+        <a href="{{ url_for('doctor.complete_appointment', appointment_id=appointment.id) }}" class="btn btn-success">Complete Appointment</a>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header"><h6 class="mb-0">Patient Information</h6></div>
+            <div class="card-body">
+                <p><strong>Name:</strong><br>{{ appointment.patient.full_name }}</p>
+                <p><strong>Phone:</strong><br>{{ appointment.patient.phone }}</p>
+                <p><strong>Gender:</strong><br>{{ appointment.patient.gender or 'N/A' }}</p>
+                <p><strong>Blood Group:</strong><br>{{ appointment.patient.blood_group or 'N/A' }}</p>
+                <a href="{{ url_for('doctor.view_patient', patient_id=appointment.patient.id) }}" class="btn btn-sm btn-primary">View Full Profile</a>
+            </div>
+        </div>
+        {% if patient_history %}
+        <div class="card">
+            <div class="card-header"><h6 class="mb-0">Previous Visits</h6></div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for past in patient_history[:5] %}
+                    <li class="list-group-item px-0">
+                        <small>{{ past.appointment_date.strftime('%d %b %Y') }}</small><br>
+                        <small class="text-muted">{{ past.treatment.diagnosis[:50] + '...' if past.treatment and past.treatment.diagnosis|length > 50 else (past.treatment.diagnosis if past.treatment else 'No diagnosis') }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

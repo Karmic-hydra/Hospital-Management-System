@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-calendar-plus"></i> Book Appointment</h2></div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Dr. {{ doctor.full_name }}</h5>
+                <p class="text-muted mb-0">{{ doctor.specialization }} | {{ doctor.department.name }}</p>
+                {% if doctor.consultation_fee %}
+                <p class="text-success mt-2"><strong>Fee: ₹{{ doctor.consultation_fee }}</strong></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Select Date <span class="text-danger">*</span></label>
+                        <select class="form-select" name="appointment_date" id="dateSelect" required>
+                            <option value="">Choose a date</option>
+                            {% for avail in availability %}
+                            <option value="{{ avail.date.isoformat() }}" data-start="{{ avail.start_time.strftime('%H:%M') }}" data-end="{{ avail.end_time.strftime('%H:%M') }}">
+                                {{ avail.date.strftime('%A, %d %B %Y') }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Please select a date.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Time <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" name="appointment_time" id="timeSelect" required>
+                        <div class="form-text" id="timeHint">Select date first to see available time range</div>
+                        <div class="invalid-feedback">Please select a time.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for Visit</label>
+                        <textarea class="form-control" name="reason" rows="4" placeholder="Describe your symptoms or reason for consultation..."></textarea>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        <a href="{{ url_for('patient.view_doctor', doctor_id=doctor.id) }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="alert alert-info">
+            <h6><i class="bi bi-info-circle"></i> Booking Guidelines</h6>
+            <ul class="mb-0 small">
+                <li>Select an available date</li>
+                <li>Choose a time within doctor's hours</li>
+                <li>Arrive 10 minutes early</li>
+                <li>Bring medical records if any</li>
+            </ul>
+        </div>
+        {% if availability %}
+        <div class="card">
+            <div class="card-header"><h6 class="mb-0">Available Dates</h6></div>
+            <ul class="list-group list-group-flush">
+                {% for avail in availability %}
+                <li class="list-group-item">
+                    <strong>{{ avail.date.strftime('%d %b') }}</strong><br>
+                    <small class="text-muted">{{ avail.start_time.strftime('%I:%M %p') }} - {{ avail.end_time.strftime('%I:%M %p') }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script>
+document.getElementById('dateSelect').addEventListener('change', function() {
+    var option = this.options[this.selectedIndex];
+    var start = option.getAttribute('data-start');
+    var end = option.getAttribute('data-end');
+    var hint = document.getElementById('timeHint');
+    if (start && end) {
+        hint.textContent = `Available time: ${start} to ${end}`;
+        hint.classList.add('text-success');
+    }
+});
+
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('form')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %}

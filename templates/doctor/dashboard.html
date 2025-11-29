@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Doctor Dashboard{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-speedometer2"></i> Doctor Dashboard</h2><p class="text-muted">Welcome, Dr. {{ doctor.full_name }}</p></div>
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card stat-card" style="border-left-color: #0d6efd;">
+            <h3 class="text-primary">{{ week_appointments|length }}</h3>
+            <p>This Week's Appointments</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card stat-card" style="border-left-color: #198754;">
+            <h3 class="text-success">{{ patient_count }}</h3>
+            <p>Total Patients</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card stat-card" style="border-left-color: #ffc107;">
+            <h3 class="text-warning">{{ completed_count }}</h3>
+            <p>Completed Appointments</p>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-calendar-event"></i> Today's Appointments</h5></div>
+            <div class="card-body">
+                {% if today_appointments %}
+                <div class="list-group list-group-flush">
+                    {% for apt in today_appointments %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ apt.patient.full_name }}</h6>
+                                <small class="text-muted"><i class="bi bi-clock"></i> {{ apt.appointment_time.strftime('%I:%M %p') }}</small>
+                            </div>
+                            <span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span>
+                        </div>
+                        {% if apt.status == 'Booked' %}
+                        <div class="mt-2">
+                            <a href="{{ url_for('doctor.complete_appointment', appointment_id=apt.id) }}" class="btn btn-sm btn-success">Complete</a>
+                            <a href="{{ url_for('doctor.view_appointment', appointment_id=apt.id) }}" class="btn btn-sm btn-info">View</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No appointments today</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-calendar-week"></i> Upcoming This Week</h5></div>
+            <div class="card-body">
+                {% if week_appointments %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>Date</th><th>Time</th><th>Patient</th></tr></thead>
+                        <tbody>
+                            {% for apt in week_appointments[:8] %}
+                            <tr>
+                                <td>{{ apt.appointment_date.strftime('%d %b') }}</td>
+                                <td>{{ apt.appointment_time.strftime('%I:%M %p') }}</td>
+                                <td>{{ apt.patient.full_name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('doctor.appointments') }}" class="btn btn-sm btn-primary">View All</a>
+                {% else %}
+                <p class="text-muted text-center">No upcoming appointments</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

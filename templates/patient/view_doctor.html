@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Doctor Profile{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-person"></i> Doctor Profile</h2></div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-person-circle display-1 text-primary"></i>
+                <h4 class="mt-3">Dr. {{ doctor.full_name }}</h4>
+                <p class="text-muted">{{ doctor.specialization }}</p>
+                {% if doctor.consultation_fee %}
+                <h5 class="text-success">₹{{ doctor.consultation_fee }}</h5>
+                <small class="text-muted">Consultation Fee</small>
+                {% endif %}
+                <div class="mt-3">
+                    {% if availability %}
+                    <a href="{{ url_for('patient.book_appointment', doctor_id=doctor.id) }}" class="btn btn-primary w-100">Book Appointment</a>
+                    {% else %}
+                    <button class="btn btn-secondary w-100" disabled>Not Available</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Professional Details</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>Department:</strong><p>{{ doctor.department.name }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Qualification:</strong><p>{{ doctor.qualification or 'N/A' }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Experience:</strong><p>{{ doctor.experience_years or 'N/A' }} years</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Phone:</strong><p>{{ doctor.phone or 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Available Dates (Next 7 Days)</h5></div>
+            <div class="card-body">
+                {% if availability %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Date</th><th>Day</th><th>Time Slot</th></tr></thead>
+                        <tbody>
+                            {% for avail in availability %}
+                            <tr>
+                                <td>{{ avail.date.strftime('%d %B %Y') }}</td>
+                                <td>{{ avail.date.strftime('%A') }}</td>
+                                <td>{{ avail.start_time.strftime('%I:%M %p') }} - {{ avail.end_time.strftime('%I:%M %p') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">Doctor has not set availability for the next 7 days</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

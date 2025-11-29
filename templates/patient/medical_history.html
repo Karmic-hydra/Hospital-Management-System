@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Medical History{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-file-medical"></i> Medical History</h2>
+    <p class="text-muted">Your complete treatment history and diagnoses</p>
+</div>
+{% if appointments %}
+    {% for apt in appointments %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">{{ apt.appointment_date.strftime('%d %B %Y') }} - Dr. {{ apt.doctor.full_name }}</h6>
+                    <small class="text-muted">{{ apt.doctor.specialization }}</small>
+                </div>
+                <span class="badge badge-completed">Completed</span>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if apt.treatment %}
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <strong><i class="bi bi-clipboard-pulse"></i> Diagnosis:</strong>
+                    <p class="ms-3">{{ apt.treatment.diagnosis }}</p>
+                </div>
+                {% if apt.treatment.prescription %}
+                <div class="col-md-12 mb-3">
+                    <strong><i class="bi bi-capsule"></i> Prescription:</strong>
+                    <div class="ms-3 bg-light p-2 rounded">{{ apt.treatment.prescription }}</div>
+                </div>
+                {% endif %}
+                {% if apt.treatment.notes %}
+                <div class="col-md-12 mb-3">
+                    <strong><i class="bi bi-journal-text"></i> Notes:</strong>
+                    <p class="ms-3 text-muted">{{ apt.treatment.notes }}</p>
+                </div>
+                {% endif %}
+                {% if apt.treatment.follow_up_date %}
+                <div class="col-md-12">
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-calendar-event"></i> <strong>Follow-up:</strong> {{ apt.treatment.follow_up_date.strftime('%d %B %Y') }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <p class="text-muted">No treatment details recorded</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-file-medical display-1 text-muted"></i>
+        <h5 class="mt-3">No Medical History</h5>
+        <p class="text-muted">You don't have any completed appointments yet</p>
+        <a href="{{ url_for('patient.doctors') }}" class="btn btn-primary">Book Your First Appointment</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

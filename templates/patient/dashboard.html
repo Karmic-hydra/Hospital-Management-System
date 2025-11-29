@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Patient Dashboard{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-speedometer2"></i> Patient Dashboard</h2><p class="text-muted">Welcome, {{ patient.full_name }}</p></div>
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-building"></i> Departments & Specializations</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    {% for dept in departments %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-hospital display-4 text-primary"></i>
+                                <h6 class="mt-2">{{ dept.name }}</h6>
+                                <p class="text-muted small">{{ dept.description[:50] + '...' if dept.description and dept.description|length > 50 else dept.description }}</p>
+                                <a href="{{ url_for('patient.doctors', department=dept.id) }}" class="btn btn-sm btn-outline-primary">View Doctors</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-calendar-plus"></i> Upcoming Appointments</h5></div>
+            <div class="card-body">
+                {% if upcoming_appointments %}
+                <div class="list-group list-group-flush">
+                    {% for apt in upcoming_appointments %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Dr. {{ apt.doctor.full_name }}</h6>
+                                <p class="mb-1 text-muted">{{ apt.doctor.specialization }}</p>
+                                <small><i class="bi bi-calendar"></i> {{ apt.appointment_date.strftime('%d %b %Y') }} at {{ apt.appointment_time.strftime('%I:%M %p') }}</small>
+                            </div>
+                            <span class="badge badge-booked">{{ apt.status }}</span>
+                        </div>
+                        <div class="mt-2">
+                            <a href="{{ url_for('patient.view_appointment', appointment_id=apt.id) }}" class="btn btn-sm btn-info">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No upcoming appointments</p>
+                <a href="{{ url_for('patient.doctors') }}" class="btn btn-primary">Book Appointment</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Appointments</h5></div>
+            <div class="card-body">
+                {% if recent_appointments %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>Date</th><th>Doctor</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for apt in recent_appointments %}
+                            <tr>
+                                <td>{{ apt.appointment_date.strftime('%d %b') }}</td>
+                                <td>Dr. {{ apt.doctor.full_name }}</td>
+                                <td><span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('patient.appointments') }}" class="btn btn-sm btn-primary">View All</a>
+                {% else %}
+                <p class="text-muted text-center">No appointments yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

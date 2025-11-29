@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hospital Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mt-5">
+        <h1 class="display-3 mb-4"><i class="bi bi-hospital text-primary"></i> Welcome to Hospital Management System</h1>
+        <p class="lead text-muted mb-5">Efficient healthcare management for patients, doctors, and administrators</p>
+        
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-person-plus display-1 text-primary mb-3"></i>
+                        <h3>For Patients</h3>
+                        <p class="text-muted">Book appointments, view medical history, and manage your health records</p>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary mt-3">Register Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-clipboard2-pulse display-1 text-success mb-3"></i>
+                        <h3>For Doctors</h3>
+                        <p class="text-muted">Manage appointments, patient records, and provide quality healthcare</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-success mt-3">Doctor Login</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-gear display-1 text-warning mb-3"></i>
+                        <h3>For Admins</h3>
+                        <p class="text-muted">Manage hospital operations, doctors, patients, and appointments</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-warning mt-3">Admin Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-3 text-center mb-4">
+                <i class="bi bi-clock-history display-4 text-info"></i>
+                <h5 class="mt-3">24/7 Service</h5>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <i class="bi bi-shield-check display-4 text-success"></i>
+                <h5 class="mt-3">Secure & Private</h5>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <i class="bi bi-calendar-check display-4 text-primary"></i>
+                <h5 class="mt-3">Easy Booking</h5>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <i class="bi bi-people display-4 text-danger"></i>
+                <h5 class="mt-3">Expert Doctors</h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

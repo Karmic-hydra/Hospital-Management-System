@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Patient Details{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-person"></i> Patient Details</h2></div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-person-circle display-1 text-success"></i>
+                <h4 class="mt-3">{{ patient.full_name }}</h4>
+                <p class="text-muted">Patient ID: {{ patient.id }}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Phone:</strong><br>{{ patient.phone }}</li>
+                <li class="list-group-item"><strong>Gender:</strong><br>{{ patient.gender or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Blood Group:</strong><br>{{ patient.blood_group or 'N/A' }}</li>
+                <li class="list-group-item"><strong>DOB:</strong><br>{{ patient.date_of_birth.strftime('%d %b %Y') if patient.date_of_birth else 'N/A' }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Appointment History with You</h5></div>
+            <div class="card-body">
+                {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Date</th><th>Status</th><th>Diagnosis</th><th>Prescription</th></tr></thead>
+                        <tbody>
+                            {% for apt in appointments %}
+                            <tr>
+                                <td>{{ apt.appointment_date.strftime('%d %b %Y') }}</td>
+                                <td><span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span></td>
+                                <td>{{ apt.treatment.diagnosis[:50] + '...' if apt.treatment and apt.treatment.diagnosis|length > 50 else (apt.treatment.diagnosis if apt.treatment else 'N/A') }}</td>
+                                <td>{{ apt.treatment.prescription[:50] + '...' if apt.treatment and apt.treatment.prescription and apt.treatment.prescription|length > 50 else (apt.treatment.prescription if apt.treatment else 'N/A') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No appointments yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="border-left-color: #0d6efd;">
+            <h3 class="text-primary">{{ total_doctors }}</h3>
+            <p>Total Doctors</p>
+            <a href="{{ url_for('admin.doctors') }}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="border-left-color: #198754;">
+            <h3 class="text-success">{{ total_patients }}</h3>
+            <p>Total Patients</p>
+            <a href="{{ url_for('admin.patients') }}" class="btn btn-sm btn-outline-success">View All</a>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="border-left-color: #ffc107;">
+            <h3 class="text-warning">{{ total_appointments }}</h3>
+            <p>Total Appointments</p>
+            <a href="{{ url_for('admin.appointments') }}" class="btn btn-sm btn-outline-warning">View All</a>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="border-left-color: #dc3545;">
+            <h3 class="text-danger">{{ today_appointments }}</h3>
+            <p>Today's Appointments</p>
+            <a href="{{ url_for('admin.appointments') }}" class="btn btn-sm btn-outline-danger">View</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Upcoming Appointments</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_appointments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for apt in upcoming_appointments %}
+                                <tr>
+                                    <td>{{ apt.appointment_date.strftime('%d %b %Y') }}</td>
+                                    <td>{{ apt.appointment_time.strftime('%I:%M %p') }}</td>
+                                    <td>{{ apt.patient.full_name }}</td>
+                                    <td>{{ apt.doctor.full_name }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No upcoming appointments</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Departments</h5>
+            </div>
+            <div class="card-body">
+                {% if dept_stats %}
+                    <ul class="list-group list-group-flush">
+                        {% for dept in dept_stats %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ dept.name }}
+                            <span class="badge bg-primary rounded-pill">{{ dept.doctor_count }} doctors</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center">No departments</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-plus"></i> Recent Patients</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_patients %}
+                    <ul class="list-group list-group-flush">
+                        {% for patient in recent_patients %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ patient.full_name }}</strong>
+                                <small class="text-muted">{{ patient.created_at.strftime('%d %b') }}</small>
+                            </div>
+                            <small class="text-muted">{{ patient.phone }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center">No recent patients</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}My Patients{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-people"></i> My Patients</h2></div>
+<div class="card">
+    <div class="card-body">
+        {% if patients %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Blood Group</th><th>Last Visit</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.id }}</td>
+                        <td>{{ patient.full_name }}</td>
+                        <td>{{ patient.phone }}</td>
+                        <td>{{ patient.blood_group or 'N/A' }}</td>
+                        <td>
+                            {% set last_apt = patient.appointments|selectattr('doctor_id', 'equalto', doctor.id)|sort(attribute='appointment_date', reverse=true)|first %}
+                            {{ last_apt.appointment_date.strftime('%d %b %Y') if last_apt else 'N/A' }}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('doctor.view_patient', patient_id=patient.id) }}" class="btn btn-sm btn-info">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No patients yet</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

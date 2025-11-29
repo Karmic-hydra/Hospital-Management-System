@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Appointment Details{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-calendar-check"></i> Appointment Details</h2></div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Appointment Information</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>Date:</strong><p>{{ appointment.appointment_date.strftime('%d %B %Y') }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Time:</strong><p>{{ appointment.appointment_time.strftime('%I:%M %p') }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Status:</strong><p><span class="badge badge-{{ appointment.status.lower() }}">{{ appointment.status }}</span></p>
+                    </div>
+                    <div class="col-md-12">
+                        <strong>Reason for Visit:</strong><p>{{ appointment.reason or 'Not specified' }}</p>
+                    </div>
+                </div>
+                {% if appointment.status == 'Booked' %}
+                <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=appointment.id) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                    <button type="submit" class="btn btn-danger">Cancel Appointment</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% if appointment.treatment %}
+        <div class="card">
+            <div class="card-header bg-success text-white"><h5 class="mb-0">Treatment Details</h5></div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Diagnosis:</strong><p>{{ appointment.treatment.diagnosis }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Prescription:</strong>
+                    <p>{{ appointment.treatment.prescription or 'No prescription' }}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Doctor's Notes:</strong>
+                    <p>{{ appointment.treatment.notes or 'No additional notes' }}</p>
+                </div>
+                {% if appointment.treatment.follow_up_date %}
+                <div class="alert alert-info">
+                    <i class="bi bi-calendar-event"></i> <strong>Follow-up Recommended:</strong> {{ appointment.treatment.follow_up_date.strftime('%d %B %Y') }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><h6 class="mb-0">Doctor Information</h6></div>
+            <div class="card-body">
+                <p><strong>Dr. {{ appointment.doctor.full_name }}</strong></p>
+                <p class="text-muted">{{ appointment.doctor.specialization }}</p>
+                <p><strong>Department:</strong><br>{{ appointment.doctor.department.name }}</p>
+                <p><strong>Phone:</strong><br>{{ appointment.doctor.phone or 'N/A' }}</p>
+                <a href="{{ url_for('patient.view_doctor', doctor_id=appointment.doctor.id) }}" class="btn btn-sm btn-info w-100">View Doctor Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

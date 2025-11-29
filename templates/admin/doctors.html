@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people"></i> Doctors Management</h2>
+    <a href="{{ url_for('admin.add_doctor') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add New Doctor
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin.doctors') }}" class="row g-3">
+            <div class="col-md-5">
+                <input type="text" class="form-control" name="search" placeholder="Search by name or specialization..." value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="department">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if request.args.get('department') == dept.id|string %}selected{% endif %}>
+                        {{ dept.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if doctors %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Specialization</th>
+                            <th>Department</th>
+                            <th>Phone</th>
+                            <th>Experience</th>
+                            <th>Fee</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doctor in doctors %}
+                        <tr>
+                            <td>{{ doctor.id }}</td>
+                            <td>
+                                <strong>{{ doctor.full_name }}</strong><br>
+                                <small class="text-muted">{{ doctor.user.email }}</small>
+                            </td>
+                            <td>{{ doctor.specialization }}</td>
+                            <td>{{ doctor.department.name }}</td>
+                            <td>{{ doctor.phone or 'N/A' }}</td>
+                            <td>{{ doctor.experience_years or 'N/A' }} years</td>
+                            <td>₹{{ doctor.consultation_fee or 'N/A' }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('admin.view_doctor', doctor_id=doctor.id) }}" class="btn btn-info" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin.edit_doctor', doctor_id=doctor.id) }}" class="btn btn-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger" onclick="confirmDelete({{ doctor.id }}, '{{ doctor.full_name }}')" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-muted">No doctors found</p>
+        {% endif %}
+    </div>
+</div>
+
+<form id="deleteForm" method="POST" style="display: none;">
+</form>
+
+<script>
+function confirmDelete(doctorId, doctorName) {
+    if (confirm(`Are you sure you want to deactivate Dr. ${doctorName}?`)) {
+        const form = document.getElementById('deleteForm');
+        form.action = `/admin/doctors/delete/${doctorId}`;
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

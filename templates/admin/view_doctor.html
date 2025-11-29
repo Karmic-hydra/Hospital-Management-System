@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}View Doctor{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-person"></i> Doctor Details</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.doctors') }}">Doctors</a></li>
+            <li class="breadcrumb-item active">{{ doctor.full_name }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-person-circle display-1 text-primary"></i>
+                <h4 class="mt-3">{{ doctor.full_name }}</h4>
+                <p class="text-muted">{{ doctor.specialization }}</p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <a href="{{ url_for('admin.edit_doctor', doctor_id=doctor.id) }}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Contact Information</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Email:</strong><br>{{ doctor.user.email }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Phone:</strong><br>{{ doctor.phone or 'N/A' }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Department:</strong><br>{{ doctor.department.name }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Professional Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>Qualification:</strong>
+                        <p>{{ doctor.qualification or 'N/A' }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Experience:</strong>
+                        <p>{{ doctor.experience_years or 'N/A' }} years</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Consultation Fee:</strong>
+                        <p>₹{{ doctor.consultation_fee or 'N/A' }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Joined:</strong>
+                        <p>{{ doctor.created_at.strftime('%d %b %Y') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Appointments</h5>
+            </div>
+            <div class="card-body">
+                {% if appointments %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for apt in appointments[:10] %}
+                                <tr>
+                                    <td>{{ apt.appointment_date.strftime('%d %b %Y') }}</td>
+                                    <td>{{ apt.appointment_time.strftime('%I:%M %p') }}</td>
+                                    <td>{{ apt.patient.full_name }}</td>
+                                    <td><span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No appointments yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
