@@ -10,8 +10,15 @@
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3">
-            <div class="col-md-9">
+            <div class="col-md-6">
                 <input type="text" class="form-control" name="search" placeholder="Search by name, phone, or ID..." value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="status">
+                    <option value="active" {% if request.args.get('status', 'active') == 'active' %}selected{% endif %}>Active Only</option>
+                    <option value="inactive" {% if request.args.get('status') == 'inactive' %}selected{% endif %}>Inactive Only</option>
+                    <option value="all" {% if request.args.get('status') == 'all' %}selected{% endif %}>All Patients</option>
+                </select>
             </div>
             <div class="col-md-3">
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
@@ -33,12 +40,13 @@
                             <th>Gender</th>
                             <th>Blood Group</th>
                             <th>Registered</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for patient in patients %}
-                        <tr>
+                        <tr {% if not patient.user.is_active %}class="table-secondary"{% endif %}>
                             <td>{{ patient.id }}</td>
                             <td>
                                 <strong>{{ patient.full_name }}</strong><br>
@@ -49,16 +57,29 @@
                             <td>{{ patient.blood_group or 'N/A' }}</td>
                             <td>{{ patient.created_at.strftime('%d %b %Y') }}</td>
                             <td>
+                                {% if patient.user.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ url_for('admin.view_patient', patient_id=patient.id) }}" class="btn btn-info" title="View">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ url_for('admin.edit_patient', patient_id=patient.id) }}" class="btn btn-warning" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-danger" onclick="confirmDelete({{ patient.id }}, '{{ patient.full_name }}')" title="Deactivate">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    {% if patient.user.is_active %}
+                                        <a href="{{ url_for('admin.edit_patient', patient_id=patient.id) }}" class="btn btn-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger" onclick="confirmDelete({{ patient.id }}, '{{ patient.full_name }}')" title="Deactivate">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-success" onclick="confirmReactivate({{ patient.id }}, '{{ patient.full_name }}')" title="Reactivate">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </button>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>
@@ -72,13 +93,21 @@
     </div>
 </div>
 
-<form id="deleteForm" method="POST" style="display: none;"></form>
+<form id="actionForm" method="POST" style="display: none;"></form>
 
 <script>
 function confirmDelete(patientId, patientName) {
     if (confirm(`Are you sure you want to deactivate ${patientName}?`)) {
-        const form = document.getElementById('deleteForm');
+        const form = document.getElementById('actionForm');
         form.action = `/admin/patients/delete/${patientId}`;
+        form.submit();
+    }
+}
+
+function confirmReactivate(patientId, patientName) {
+    if (confirm(`Are you sure you want to reactivate ${patientName}?`)) {
+        const form = document.getElementById('actionForm');
+        form.action = `/admin/patients/reactivate/${patientId}`;
         form.submit();
     }
 }

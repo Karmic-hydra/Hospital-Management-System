@@ -80,9 +80,16 @@ def doctors():
     # Get search parameters
     searchQuery = request.args.get('search', '').strip()
     departmentId = request.args.get('department', type=int)
+    status_filter = request.args.get('status', 'active').strip()
     
-    # Start with base query - only active users
-    baseQuery = Doctor.query.join(User).filter(User.is_active == True)
+    # Start with base query
+    baseQuery = Doctor.query.join(User)
+    
+    # Filter by active/inactive status
+    if status_filter == 'active':
+        baseQuery = baseQuery.filter(User.is_active == True)
+    elif status_filter == 'inactive':
+        baseQuery = baseQuery.filter(User.is_active == False)
     
     # Apply search filter if provided
     if searchQuery:
@@ -259,13 +266,40 @@ def delete_doctor(doctor_id):
     return redirect(url_for('admin.doctors'))
 
 
+@admin_bp.route('/doctors/reactivate/<int:doctor_id>', methods=['POST'])
+@login_required
+@admin_required
+def reactivate_doctor(doctor_id):
+    doctor = Doctor.query.get_or_404(doctor_id)
+    
+    try:
+        # Reactivate user account
+        doctor.user.is_active = True
+        db.session.commit()
+        flash(f'Doctor {doctor.full_name} has been reactivated.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while reactivating the doctor.', 'danger')
+        print(f"Error reactivating doctor: {e}")
+    
+    return redirect(url_for('admin.doctors'))
+
+
 @admin_bp.route('/patients')
 @login_required
 @admin_required
 def patients():
     search_query = request.args.get('search', '').strip()
+    status_filter = request.args.get('status', 'active').strip()
     
-    query = Patient.query.join(User).filter(User.is_active == True)
+    query = Patient.query.join(User)
+    
+    # Filter by active/inactive status
+    if status_filter == 'active':
+        query = query.filter(User.is_active == True)
+    elif status_filter == 'inactive':
+        query = query.filter(User.is_active == False)
+    # 'all' shows both active and inactive
     
     if search_query:
         query = query.filter(
@@ -348,6 +382,25 @@ def delete_patient(patient_id):
         db.session.rollback()
         flash('An error occurred while deactivating the patient.', 'danger')
         print(f"Error deactivating patient: {e}")
+    
+    return redirect(url_for('admin.patients'))
+
+
+@admin_bp.route('/patients/reactivate/<int:patient_id>', methods=['POST'])
+@login_required
+@admin_required
+def reactivate_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    
+    try:
+        # Reactivate user account
+        patient.user.is_active = True
+        db.session.commit()
+        flash(f'Patient {patient.full_name} has been reactivated.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while reactivating the patient.', 'danger')
+        print(f"Error reactivating patient: {e}")
     
     return redirect(url_for('admin.patients'))
 
