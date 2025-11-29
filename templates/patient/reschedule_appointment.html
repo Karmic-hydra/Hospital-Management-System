@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Reschedule Appointment{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="bi bi-calendar-event"></i> Reschedule Appointment</h2></div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">Current Appointment Details</div>
+            <div class="card-body">
+                <p><strong>Doctor:</strong> Dr. {{ appointment.doctor.full_name }}</p>
+                <p><strong>Current Date:</strong> {{ appointment.appointment_date.strftime('%d %B %Y') }}</p>
+                <p><strong>Current Time:</strong> {{ appointment.appointment_time.strftime('%I:%M %p') }}</p>
+                <p><strong>Reason:</strong> {{ appointment.reason }}</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="mb-4">Select New Date and Time</h5>
+                <form method="POST" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">New Appointment Date <span class="text-danger">*</span></label>
+                        <select class="form-select" name="appointment_date" id="appointmentDate" required>
+                            <option value="">Select a date...</option>
+                            {% for avail in availability %}
+                            <option value="{{ avail.date.isoformat() }}">
+                                {{ avail.date.strftime('%A, %d %B %Y') }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Appointment Time <span class="text-danger">*</span></label>
+                        <select class="form-select" name="appointment_time" id="appointmentTime" required>
+                            <option value="">Select date first...</option>
+                        </select>
+                        <small class="text-muted">Available slots will appear after selecting a date</small>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Reschedule Appointment</button>
+                        <a href="{{ url_for('patient.view_appointment', appointment_id=appointment.id) }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Doctor Information</div>
+            <div class="card-body">
+                <p><strong>Dr. {{ appointment.doctor.full_name }}</strong></p>
+                <p class="text-muted">{{ appointment.doctor.specialization }}</p>
+                <p><strong>Department:</strong><br>{{ appointment.doctor.department.name }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('appointmentDate').addEventListener('change', function() {
+    const timeSelect = document.getElementById('appointmentTime');
+    timeSelect.innerHTML = '<option value="">Select a time...</option>';
+    
+    // Generate time slots from 9 AM to 5 PM
+    const startHour = 9;
+    const endHour = 17;
+    
+    for (let hour = startHour; hour < endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+            const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const displayHour = hour > 12 ? hour - 12 : hour;
+            const period = hour >= 12 ? 'PM' : 'AM';
+            const timeDisplay = `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+            
+            const option = document.createElement('option');
+            option.value = timeValue;
+            option.textContent = timeDisplay;
+            timeSelect.appendChild(option);
+        }
+    }
+});
+
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('form')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %}

@@ -5,16 +5,19 @@
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <input type="text" class="form-control" name="search" placeholder="Search by name or specialization..." value="{{ request.args.get('search', '') }}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <select class="form-select" name="department">
                     <option value="">All Departments</option>
                     {% for dept in departments %}
                     <option value="{{ dept.id }}" {% if request.args.get('department') == dept.id|string %}selected{% endif %}>{{ dept.name }}</option>
                     {% endfor %}
                 </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" class="form-control" name="availability_date" placeholder="Available on date..." value="{{ request.args.get('availability_date', '') }}" title="Filter by availability date">
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>

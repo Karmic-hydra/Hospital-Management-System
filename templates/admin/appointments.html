@@ -28,7 +28,7 @@
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
-                    <tr><th>ID</th><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Status</th><th>Reason</th></tr>
+                    <tr><th>ID</th><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Status</th><th>Reason</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
                     {% for apt in appointments %}
@@ -40,6 +40,11 @@
                         <td>{{ apt.doctor.full_name }}</td>
                         <td><span class="badge badge-{{ apt.status.lower() }}">{{ apt.status }}</span></td>
                         <td>{{ apt.reason[:30] + '...' if apt.reason and apt.reason|length > 30 else (apt.reason or 'N/A') }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.view_appointment', appointment_id=apt.id) }}" class="btn btn-sm btn-info" title="View Details">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

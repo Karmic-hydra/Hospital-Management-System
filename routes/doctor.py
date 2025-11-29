@@ -170,7 +170,12 @@ def complete_appointment(appointment_id):
             flash('An error occurred while completing the appointment.', 'danger')
             print(f"Error completing appointment: {e}")
     
-    return render_template('doctor/complete_appointment.html', appointment=selectedAppointment)
+    # Calculate minimum follow-up date
+    minFollowUpDate = (selectedAppointment.appointment_date + timedelta(days=1)).isoformat() if selectedAppointment.appointment_date else ''
+    
+    return render_template('doctor/complete_appointment.html', 
+                         appointment=selectedAppointment,
+                         min_follow_up_date=minFollowUpDate)
 
 
 @doctor_bp.route('/appointment/<int:appointment_id>/cancel', methods=['POST'])
@@ -194,6 +199,59 @@ def cancel_appointment(appointment_id):
         print(f"Error cancelling appointment: {e}")
     
     return redirect(url_for('doctor.appointments'))
+
+
+@doctor_bp.route('/appointment/<int:appointment_id>/edit-treatment', methods=['GET', 'POST'])
+@login_required
+@doctor_required
+def edit_treatment(appointment_id):
+    doctor = Doctor.query.filter_by(user_id=current_user.id).first()
+    appointment = Appointment.query.filter_by(
+        id=appointment_id,
+        doctor_id=doctor.id
+    ).first_or_404()
+    
+    if appointment.status != 'Completed' or not appointment.treatment:
+        flash('This appointment has no treatment record to edit.', 'warning')
+        return redirect(url_for('doctor.view_appointment', appointment_id=appointment_id))
+    
+    if request.method == 'POST':
+        diagnosis = request.form.get('diagnosis', '').strip()
+        prescription = request.form.get('prescription', '').strip()
+        notes = request.form.get('notes', '').strip()
+        followUpDateStr = request.form.get('follow_up_date', '').strip()
+        
+        if not diagnosis:
+            flash('Diagnosis is required.', 'danger')
+            return redirect(url_for('doctor.edit_treatment', appointment_id=appointment_id))
+        
+        try:
+            # Update treatment
+            appointment.treatment.diagnosis = diagnosis
+            appointment.treatment.prescription = prescription
+            appointment.treatment.notes = notes
+            
+            if followUpDateStr:
+                followUpDate = datetime.strptime(followUpDateStr, '%Y-%m-%d').date()
+                appointment.treatment.follow_up_date = followUpDate
+            else:
+                appointment.treatment.follow_up_date = None
+            
+            db.session.commit()
+            flash('Treatment updated successfully!', 'success')
+            return redirect(url_for('doctor.view_appointment', appointment_id=appointment.id))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while updating treatment.', 'danger')
+            print(f"Error updating treatment: {e}")
+    
+    # Calculate minimum follow-up date
+    minFollowUpDate = (appointment.appointment_date + timedelta(days=1)).isoformat() if appointment.appointment_date else ''
+    
+    return render_template('doctor/edit_treatment.html',
+                         appointment=appointment,
+                         min_follow_up_date=minFollowUpDate)
 
 
 @doctor_bp.route('/patients')

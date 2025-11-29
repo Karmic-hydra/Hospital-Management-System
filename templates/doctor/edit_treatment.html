@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Complete Appointment{% endblock %}
+{% block title %}Edit Treatment{% endblock %}
 {% block content %}
-<div class="mb-4"><h2><i class="bi bi-clipboard-check"></i> Complete Appointment</h2></div>
+<div class="mb-4"><h2><i class="bi bi-pencil-square"></i> Edit Treatment Record</h2></div>
 <div class="row">
     <div class="col-md-8">
         <div class="card mb-3">
@@ -15,26 +15,38 @@
                 <form method="POST" novalidate>
                     <div class="mb-3">
                         <label class="form-label">Diagnosis <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="diagnosis" rows="4" required placeholder="Enter patient diagnosis..."></textarea>
+                        <textarea class="form-control" name="diagnosis" rows="4" required placeholder="Enter patient diagnosis...">{{ appointment.treatment.diagnosis }}</textarea>
                         <div class="invalid-feedback">Please enter the diagnosis.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Prescription</label>
-                        <textarea class="form-control" name="prescription" rows="4" placeholder="Enter prescribed medicines and dosage..."></textarea>
+                        <textarea class="form-control" name="prescription" rows="4" placeholder="Enter prescribed medicines and dosage...">{{ appointment.treatment.prescription or '' }}</textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Additional Notes</label>
-                        <textarea class="form-control" name="notes" rows="3" placeholder="Any additional notes or recommendations..."></textarea>
+                        <label class="form-label">Additional Notes / Treatment Plan</label>
+                        <textarea class="form-control" name="notes" rows="4" placeholder="Any additional notes, treatment plan, or recommendations...">{{ appointment.treatment.notes or '' }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Follow-up Date (Optional)</label>
-                        <input type="date" class="form-control" name="follow_up_date" min="{{ min_follow_up_date }}">
+                        <input type="date" class="form-control" name="follow_up_date" min="{{ min_follow_up_date }}" value="{{ appointment.treatment.follow_up_date.isoformat() if appointment.treatment.follow_up_date else '' }}">
                     </div>
                     <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn btn-success">Complete Appointment</button>
+                        <button type="submit" class="btn btn-success">Update Treatment</button>
                         <a href="{{ url_for('doctor.view_appointment', appointment_id=appointment.id) }}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Patient Information</div>
+            <div class="card-body">
+                <p><strong>{{ appointment.patient.full_name }}</strong></p>
+                <p class="text-muted">Patient ID: {{ appointment.patient.id }}</p>
+                <p><strong>Phone:</strong><br>{{ appointment.patient.phone }}</p>
+                <p><strong>Blood Group:</strong><br>{{ appointment.patient.blood_group or 'N/A' }}</p>
+                <a href="{{ url_for('doctor.view_patient', patient_id=appointment.patient.id) }}" class="btn btn-sm btn-info w-100">View Full Profile</a>
             </div>
         </div>
     </div>

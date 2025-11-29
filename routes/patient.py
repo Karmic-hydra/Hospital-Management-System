@@ -54,6 +54,7 @@ def doctors():
     
     searchQuery = request.args.get('search', '').strip()
     departmentId = request.args.get('department', type=int)
+    availabilityDate = request.args.get('availability_date', '').strip()
     
     # Build query - only active doctors
     baseQuery = Doctor.query.join(Doctor.user).filter(Doctor.user.has(is_active=True))
@@ -71,6 +72,18 @@ def doctors():
     # Apply department filter - this part is tricky!
     if departmentId:
         baseQuery = baseQuery.filter(Doctor.department_id == departmentId)
+    
+    # Apply availability date filter
+    if availabilityDate:
+        try:
+            searchDate = datetime.strptime(availabilityDate, '%Y-%m-%d').date()
+            # Filter doctors who have availability on this date
+            baseQuery = baseQuery.join(DoctorAvailability).filter(
+                DoctorAvailability.date == searchDate,
+                DoctorAvailability.is_available == True
+            ).distinct()
+        except ValueError:
+            pass  # Invalid date format, ignore filter
     
     # Execute query
     doctorsList = baseQuery.all()
@@ -313,6 +326,93 @@ def cancel_appointment(appointment_id):
         print(f"Error cancelling appointment: {e}")
     
     return redirect(url_for('patient.appointments'))
+
+
+@patient_bp.route('/appointment/<int:appointment_id>/reschedule', methods=['GET', 'POST'])
+@login_required
+@patient_required
+def reschedule_appointment(appointment_id):
+    patient = Patient.query.filter_by(user_id=current_user.id).first()
+    appointment = Appointment.query.filter_by(
+        id=appointment_id,
+        patient_id=patient.id
+    ).first_or_404()
+    
+    if appointment.status != 'Booked':
+        flash('Only booked appointments can be rescheduled.', 'warning')
+        return redirect(url_for('patient.appointments'))
+    
+    if request.method == 'POST':
+        newDate = request.form.get('appointment_date')
+        newTime = request.form.get('appointment_time')
+        
+        if not newDate or not newTime:
+            flash('Please select both date and time.', 'danger')
+            return redirect(url_for('patient.reschedule_appointment', appointment_id=appointment_id))
+        
+        try:
+            # Parse new date and time
+            appointmentDate = datetime.strptime(newDate, '%Y-%m-%d').date()
+            appointmentTime = datetime.strptime(newTime, '%H:%M').time()
+            
+            # Check if date is in the future
+            todayDate = datetime.now().date()
+            if appointmentDate < todayDate:
+                flash('Appointment date must be in the future.', 'danger')
+                return redirect(url_for('patient.reschedule_appointment', appointment_id=appointment_id))
+            
+            # Check doctor availability
+            availability = DoctorAvailability.query.filter_by(
+                doctor_id=appointment.doctor_id,
+                date=appointmentDate,
+                is_available=True
+            ).first()
+            
+            if not availability:
+                flash('Doctor is not available on the selected date.', 'danger')
+                return redirect(url_for('patient.reschedule_appointment', appointment_id=appointment_id))
+            
+            # Check for conflicting appointments
+            conflictingAppointment = Appointment.query.filter(
+                Appointment.doctor_id == appointment.doctor_id,
+                Appointment.appointment_date == appointmentDate,
+                Appointment.appointment_time == appointmentTime,
+                Appointment.status == 'Booked',
+                Appointment.id != appointment.id
+            ).first()
+            
+            if conflictingAppointment:
+                flash('This time slot is already booked. Please select another time.', 'danger')
+                return redirect(url_for('patient.reschedule_appointment', appointment_id=appointment_id))
+            
+            # Update appointment
+            appointment.appointment_date = appointmentDate
+            appointment.appointment_time = appointmentTime
+            db.session.commit()
+            
+            flash('Appointment rescheduled successfully!', 'success')
+            return redirect(url_for('patient.view_appointment', appointment_id=appointment.id))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while rescheduling the appointment.', 'danger')
+            print(f"Error rescheduling appointment: {e}")
+    
+    # Get doctor availability for next 30 days
+    today = datetime.now().date()
+    endDate = today + timedelta(days=30)
+    
+    availability = DoctorAvailability.query.filter(
+        DoctorAvailability.doctor_id == appointment.doctor_id,
+        DoctorAvailability.date >= today,
+        DoctorAvailability.date <= endDate,
+        DoctorAvailability.is_available == True
+    ).order_by(DoctorAvailability.date).all()
+    
+    return render_template('patient/reschedule_appointment.html',
+                         appointment=appointment,
+                         availability=availability,
+                         patient=patient)
 
 
 @patient_bp.route('/medical-history')

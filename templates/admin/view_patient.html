@@ -16,6 +16,31 @@
                 </a>
             </div>
         </div>
+        <div class="card mb-3">
+            <div class="card-header bg-warning">
+                <h6 class="mb-0"><i class="bi bi-key"></i> Login Credentials</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Username:</strong><br>
+                    <code>{{ patient.user.username }}</code>
+                </li>
+                <li class="list-group-item">
+                    <strong>Account Status:</strong><br>
+                    {% if patient.user.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </li>
+                <li class="list-group-item">
+                    <button class="btn btn-sm btn-danger" onclick="showResetPasswordModal()">
+                        <i class="bi bi-arrow-clockwise"></i> Reset Password
+                    </button>
+                </li>
+            </ul>
+        </div>
+        
         <div class="card">
             <div class="card-header"><h6 class="mb-0">Personal Information</h6></div>
             <ul class="list-group list-group-flush">
@@ -56,4 +81,37 @@
         </div>
     </div>
 </div>
+
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.reset_password', user_type='patient', user_id=patient.id) }}">
+                <div class="modal-body">
+                    <p>Reset password for <strong>{{ patient.full_name }}</strong> ({{ patient.user.username }})?</p>
+                    <div class="mb-3">
+                        <label class="form-label">New Password <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="new_password" required>
+                        <small class="text-muted">Minimum 6 characters</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reset Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showResetPasswordModal() {
+    var modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+    modal.show();
+}
+</script>
 {% endblock %}

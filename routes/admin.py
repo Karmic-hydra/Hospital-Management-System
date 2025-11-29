@@ -448,3 +448,70 @@ def view_doctor(doctor_id):
     ).all()
     
     return render_template('admin/view_doctor.html', doctor=doctor, appointments=appointments)
+
+
+@admin_bp.route('/appointment/<int:appointment_id>')
+@login_required
+@admin_required
+def view_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    return render_template('admin/view_appointment.html', appointment=appointment)
+
+
+@admin_bp.route('/appointment/<int:appointment_id>/cancel', methods=['POST'])
+@login_required
+@admin_required
+def cancel_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    
+    if appointment.status != 'Booked':
+        flash('Only booked appointments can be cancelled.', 'warning')
+        return redirect(url_for('admin.appointments'))
+    
+    try:
+        appointment.status = 'Cancelled'
+        db.session.commit()
+        flash('Appointment cancelled successfully.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while cancelling the appointment.', 'danger')
+        print(f"Error cancelling appointment: {e}")
+    
+    return redirect(url_for('admin.appointments'))
+
+
+@admin_bp.route('/reset-password/<user_type>/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def reset_password(user_type, user_id):
+    newPassword = request.form.get('new_password', '').strip()
+    
+    if not newPassword or len(newPassword) < 6:
+        flash('Password must be at least 6 characters long.', 'danger')
+        return redirect(request.referrer or url_for('admin.dashboard'))
+    
+    try:
+        if user_type == 'doctor':
+            doctor = Doctor.query.get_or_404(user_id)
+            user = doctor.user
+            userName = doctor.full_name
+        elif user_type == 'patient':
+            patient = Patient.query.get_or_404(user_id)
+            user = patient.user
+            userName = patient.full_name
+        else:
+            flash('Invalid user type.', 'danger')
+            return redirect(url_for('admin.dashboard'))
+        
+        # Reset password
+        user.set_password(newPassword)
+        db.session.commit()
+        
+        flash(f'Password reset successfully for {userName}. New password: {newPassword}', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while resetting the password.', 'danger')
+        print(f"Error resetting password: {e}")
+    
+    return redirect(request.referrer or url_for('admin.dashboard'))

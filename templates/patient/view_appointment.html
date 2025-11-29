@@ -22,9 +22,12 @@
                     </div>
                 </div>
                 {% if appointment.status == 'Booked' %}
-                <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=appointment.id) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
-                    <button type="submit" class="btn btn-danger">Cancel Appointment</button>
-                </form>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('patient.reschedule_appointment', appointment_id=appointment.id) }}" class="btn btn-warning">Reschedule</a>
+                    <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=appointment.id) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Cancel Appointment</button>
+                    </form>
+                </div>
                 {% endif %}
             </div>
         </div>

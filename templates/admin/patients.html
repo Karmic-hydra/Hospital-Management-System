@@ -36,6 +36,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Username</th>
                             <th>Phone</th>
                             <th>Gender</th>
                             <th>Blood Group</th>
@@ -52,6 +53,7 @@
                                 <strong>{{ patient.full_name }}</strong><br>
                                 <small class="text-muted">{{ patient.user.email }}</small>
                             </td>
+                            <td><code>{{ patient.user.username }}</code></td>
                             <td>{{ patient.phone }}</td>
                             <td>{{ patient.gender or 'N/A' }}</td>
                             <td>{{ patient.blood_group or 'N/A' }}</td>

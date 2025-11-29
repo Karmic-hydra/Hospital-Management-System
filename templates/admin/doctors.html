@@ -49,6 +49,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Username</th>
                             <th>Specialization</th>
                             <th>Department</th>
                             <th>Phone</th>
@@ -66,6 +67,7 @@
                                 <strong>{{ doctor.full_name }}</strong><br>
                                 <small class="text-muted">{{ doctor.user.email }}</small>
                             </td>
+                            <td><code>{{ doctor.user.username }}</code></td>
                             <td>{{ doctor.specialization }}</td>
                             <td>{{ doctor.department.name }}</td>
                             <td>{{ doctor.phone or 'N/A' }}</td>
