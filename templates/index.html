@@ -15,7 +15,7 @@
     }
     
     .hero-subtitle {
-        color: #8B7B6A;
+        color: #3B8A3B;
         font-size: 1.3rem;
     }
     
@@ -31,7 +31,7 @@
     .icon-primary { color: #5DAA5D; }
     .icon-success { color: #3B8A3B; }
     .icon-accent { color: #8CCB8C; }
-    .icon-taupe { color: #A18C7A; }
+    .icon-light { color: #B2E0B2; }
     
     .btn-success {
         background: linear-gradient(135deg, #3B8A3B 0%, #2A6A2A 100%);
@@ -46,17 +46,17 @@
     }
     
     .btn-warning {
-        background: linear-gradient(135deg, #D1C6B8 0%, #B7A99A 100%);
+        background: linear-gradient(135deg, #B2E0B2 0%, #8CCB8C 100%);
         border: none;
         color: #2A6A2A;
-        box-shadow: 0 4px 12px rgba(161, 140, 122, 0.3);
+        box-shadow: 0 4px 12px rgba(93, 170, 93, 0.3);
         font-weight: 600;
     }
     
     .btn-warning:hover {
-        background: linear-gradient(135deg, #B7A99A 0%, #A18C7A 100%);
+        background: linear-gradient(135deg, #8CCB8C 0%, #5DAA5D 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(161, 140, 122, 0.4);
+        box-shadow: 0 6px 20px rgba(93, 170, 93, 0.4);
         color: #2A6A2A;
     }
 </style>
@@ -76,7 +76,7 @@
                     <div class="card-body text-center p-4">
                         <i class="bi bi-person-plus display-1 icon-primary mb-3"></i>
                         <h3 style="color: #3B8A3B;">For Patients</h3>
-                        <p style="color: #8B7B6A;">Book appointments, view medical history, and manage your health records</p>
+                        <p style="color: #5DAA5D;">Book appointments, view medical history, and manage your health records</p>
                         <a href="{{ url_for('auth.register') }}" class="btn btn-primary mt-3">Register Now</a>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                     <div class="card-body text-center p-4">
                         <i class="bi bi-clipboard2-pulse display-1 icon-success mb-3"></i>
                         <h3 style="color: #3B8A3B;">For Doctors</h3>
-                        <p style="color: #8B7B6A;">Manage appointments, patient records, and provide quality healthcare</p>
+                        <p style="color: #5DAA5D;">Manage appointments, patient records, and provide quality healthcare</p>
                         <a href="{{ url_for('auth.login') }}" class="btn btn-success mt-3">Doctor Login</a>
                     </div>
                 </div>
@@ -96,9 +96,9 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100 feature-card">
                     <div class="card-body text-center p-4">
-                        <i class="bi bi-gear display-1 icon-taupe mb-3"></i>
+                        <i class="bi bi-gear display-1 icon-accent mb-3"></i>
                         <h3 style="color: #3B8A3B;">For Admins</h3>
-                        <p style="color: #8B7B6A;">Manage hospital operations, doctors, patients, and appointments</p>
+                        <p style="color: #5DAA5D;">Manage hospital operations, doctors, patients, and appointments</p>
                         <a href="{{ url_for('auth.login') }}" class="btn btn-warning mt-3">Admin Login</a>
                     </div>
                 </div>

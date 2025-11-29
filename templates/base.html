@@ -15,23 +15,16 @@
             --accent-color: #B2E0B2;
             --dark-green: #2A6A2A;
             
-            /* Soothing neutral palette */
-            --beige-light: #EAE3D2;
-            --beige: #D1C6B8;
-            --taupe-light: #B7A99A;
-            --taupe: #A18C7A;
-            --brown: #8B7B6A;
-            
-            /* Status colors using calming tones */
+            /* Status colors using green tones */
             --success-color: #5DAA5D;
-            --danger-color: #A18C7A;
-            --warning-color: #D1C6B8;
+            --danger-color: #8CCB8C;
+            --warning-color: #B2E0B2;
             --info-color: #8CCB8C;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #EAE3D2 0%, #D1C6B8 100%);
+            background: linear-gradient(135deg, #B2E0B2 0%, #8CCB8C 100%);
             min-height: 100vh;
         }
         
@@ -43,14 +36,14 @@
         
         .sidebar {
             min-height: calc(100vh - 56px);
-            background: linear-gradient(180deg, #ffffff 0%, #f8f6f0 100%);
-            box-shadow: 4px 0 16px rgba(161, 140, 122, 0.1);
+            background: linear-gradient(180deg, #ffffff 0%, #f0faf0 100%);
+            box-shadow: 4px 0 16px rgba(93, 170, 93, 0.15);
             padding: 20px 0;
-            border-right: 1px solid rgba(161, 140, 122, 0.1);
+            border-right: 1px solid rgba(93, 170, 93, 0.1);
         }
         
         .sidebar .nav-link {
-            color: #8B7B6A;
+            color: #3B8A3B;
             padding: 12px 20px;
             margin: 5px 10px;
             border-radius: 12px;
@@ -80,14 +73,14 @@
             border-radius: 16px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(161, 140, 122, 0.15);
+            box-shadow: 0 4px 20px rgba(93, 170, 93, 0.2);
             transition: all 0.3s ease;
             overflow: hidden;
         }
         
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 8px 32px rgba(93, 170, 93, 0.2);
+            box-shadow: 0 8px 32px rgba(93, 170, 93, 0.3);
         }
         
         .card-header {
@@ -112,7 +105,7 @@
         }
         
         .stat-card p {
-            color: #8B7B6A;
+            color: #3B8A3B;
             margin-bottom: 0;
         }
         
@@ -139,7 +132,7 @@
             background-color: rgba(255, 255, 255, 0.95);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(161, 140, 122, 0.1);
+            box-shadow: 0 4px 20px rgba(93, 170, 93, 0.15);
         }
         
         .table thead {
@@ -172,13 +165,14 @@
         }
         
         .badge-cancelled {
-            background: linear-gradient(135deg, #B7A99A 0%, #A18C7A 100%);
+            background: linear-gradient(135deg, #8CCB8C 0%, #5DAA5D 100%);
             color: white;
+            opacity: 0.7;
         }
         
         .form-control, .form-select {
             border-radius: 12px;
-            border: 2px solid rgba(161, 140, 122, 0.2);
+            border: 2px solid rgba(93, 170, 93, 0.2);
             padding: 10px 15px;
             background-color: rgba(255, 255, 255, 0.9);
             transition: all 0.3s ease;
@@ -202,7 +196,7 @@
         }
         
         .alert-danger {
-            background: linear-gradient(135deg, rgba(183, 169, 154, 0.9) 0%, rgba(161, 140, 122, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(140, 203, 140, 0.9) 0%, rgba(93, 170, 93, 0.9) 100%);
             color: white;
         }
         
