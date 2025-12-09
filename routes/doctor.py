@@ -12,16 +12,13 @@ doctor_bp = Blueprint('doctor', __name__)
 @login_required
 @doctor_required
 def dashboard():
-    # Get current doctor profile
     currentUserId = current_user.id
     currentDoctor = Doctor.query.filter_by(user_id=currentUserId).first()
     
-    # Check if doctor exists - debugging is important here !!!!
     if currentDoctor is None:
         flash('Doctor profile not found.', 'danger')
         return redirect(url_for('auth.logout'))
     
-    # Get today's appointments - this part is tricky!
     todayDate = datetime.now().date()
     doctorId = currentDoctor.id
     
@@ -75,7 +72,6 @@ def appointments():
     
     baseQuery = Appointment.query.filter_by(doctor_id=currentDoctor.id)
     
-    # Apply status filter if provided - this part is tricky!
     hasStatusFilter = len(statusFilter) > 0
     if hasStatusFilter:
         baseQuery = baseQuery.filter_by(status=statusFilter)
@@ -117,11 +113,9 @@ def view_appointment(appointment_id):
 @login_required
 @doctor_required
 def complete_appointment(appointment_id):
-    # Get current doctor profile
     currentDoctor = Doctor.query.filter_by(user_id=current_user.id).first()
     selectedAppointment = Appointment.query.filter_by(id=appointment_id, doctor_id=currentDoctor.id).first_or_404()
     
-    # Check appointment status - debugging is important here !!!!
     appointmentStatus = selectedAppointment.status
     isBookedStatus = appointmentStatus == 'Booked'
     
@@ -141,7 +135,6 @@ def complete_appointment(appointment_id):
             return render_template('doctor/complete_appointment.html', appointment=selectedAppointment)
         
         try:
-            # Create treatment record - this part is tricky!
             newTreatment = Treatment(
                 appointment_id=selectedAppointment.id,
                 diagnosis=patientDiagnosis,
@@ -260,7 +253,6 @@ def edit_treatment(appointment_id):
 def patients():
     currentDoctor = Doctor.query.filter_by(user_id=current_user.id).first()
     
-    # This part is tricky - avoid duplicates!
     allAppointments = Appointment.query.filter_by(doctor_id=currentDoctor.id).all()
     
     uniquePatientIds = set()
@@ -270,7 +262,6 @@ def patients():
     
     patientIdsList = list(uniquePatientIds)
     
-    # Debugging is important here !!!!
     patientsList = Patient.query.filter(Patient.id.in_(patientIdsList)).all()
     
     return render_template('doctor/patients.html', patients=patientsList, doctor=currentDoctor)

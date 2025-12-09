@@ -16,14 +16,12 @@ def dashboard():
     currentUserId = current_user.id
     currentPatient = Patient.query.filter_by(user_id=currentUserId).first()
     
-    # Debugging is important here !!!!
     if currentPatient is None:
         flash('Patient profile not found.', 'danger')
         return redirect(url_for('auth.logout'))
     
     allDepartments = Department.query.all()
     
-    # This part is tricky!
     todayDate = datetime.now().date()
     patientId = currentPatient.id
     
@@ -34,7 +32,6 @@ def dashboard():
         Appointment.status == 'Booked'
     ).order_by(Appointment.appointment_date, Appointment.appointment_time).all()
     
-    # Get recent appointments - more human approach
     recentBookings = Appointment.query.filter_by(
         patient_id=patientId
     ).order_by(Appointment.appointment_date.desc()).limit(5).all()
@@ -69,7 +66,6 @@ def doctors():
             )
         )
     
-    # Apply department filter - this part is tricky!
     if departmentId:
         baseQuery = baseQuery.filter(Doctor.department_id == departmentId)
     
@@ -89,8 +85,6 @@ def doctors():
     doctorsList = baseQuery.all()
     allDepartments = Department.query.all()
     
-    # Get availability for next 7 days for each doctor
-    # More human approach using dict
     todayDate = datetime.now().date()
     weekEndDate = todayDate + timedelta(days=7)
     
@@ -100,7 +94,6 @@ def doctors():
     for currentDoctor in doctorsList:
         doctorId = currentDoctor.id
         
-        # Find available slots - debugging is important here !!!!
         availableSlots = DoctorAvailability.query.filter(
             DoctorAvailability.doctor_id == doctorId,
             DoctorAvailability.date >= todayDate,
@@ -108,7 +101,6 @@ def doctors():
             DoctorAvailability.is_available == True
         ).order_by(DoctorAvailability.date).all()
         
-        # Create doctor info dict
         doctorInfo = {
             'doctor': currentDoctor,
             'availability': availableSlots
@@ -149,7 +141,6 @@ def view_doctor(doctor_id):
 @login_required
 @patient_required
 def book_appointment(doctor_id):
-    # Get current patient info
     currentPatient = Patient.query.filter_by(user_id=current_user.id).first()
     selectedDoctor = Doctor.query.get_or_404(doctor_id)
     
@@ -166,7 +157,6 @@ def book_appointment(doctor_id):
             return redirect(url_for('patient.book_appointment', doctor_id=doctor_id))
         
         try:
-            # Parse date and time strings - this part is tricky!
             parsedDate = datetime.strptime(appointmentDateStr, '%Y-%m-%d').date()
             parsedTime = datetime.strptime(appointmentTimeStr, '%H:%M').time()
             
@@ -178,7 +168,6 @@ def book_appointment(doctor_id):
                 flash('Cannot book appointment for past dates.', 'danger')
                 return redirect(url_for('patient.book_appointment', doctor_id=doctor_id))
             
-            # Check if doctor is available - debugging is important here !!!!
             doctorAvailability = DoctorAvailability.query.filter_by(
                 doctor_id=doctor_id,
                 date=parsedDate,
@@ -202,8 +191,6 @@ def book_appointment(doctor_id):
                 flash(f'Please select a time between {startTimeStr} and {endTimeStr}.', 'danger')
                 return redirect(url_for('patient.book_appointment', doctor_id=doctor_id))
             
-            # Check for existing appointment at the same time
-            # More human approach - check separately
             conflictingBooking = Appointment.query.filter_by(
                 doctor_id=doctor_id,
                 appointment_date=parsedDate,
@@ -262,7 +249,6 @@ def book_appointment(doctor_id):
 @login_required
 @patient_required
 def appointments():
-    # Get current patient
     currentPatient = Patient.query.filter_by(user_id=current_user.id).first()
     
     # Get status filter from query params
@@ -271,7 +257,6 @@ def appointments():
     # Build query - using camelCase
     baseQuery = Appointment.query.filter_by(patient_id=currentPatient.id)
     
-    # Apply filter if provided - this part is tricky!
     hasFilter = len(statusFilter) > 0
     if hasFilter:
         baseQuery = baseQuery.filter_by(status=statusFilter)
@@ -449,7 +434,6 @@ def profile():
         bloodGroup = request.form.get('blood_group', '').strip()
         emergencyContact = request.form.get('emergency_contact', '').strip()
         
-        # Validate required fields - debugging is important here !!!!
         hasName = len(fullName) > 0
         hasPhone = len(phoneNumber) > 0
         
@@ -466,7 +450,6 @@ def profile():
             currentPatient.blood_group = bloodGroup
             currentPatient.emergency_contact = emergencyContact
             
-            # Update date of birth if provided - this part is tricky!
             hasDob = len(dateOfBirth) > 0
             if hasDob:
                 parsedDob = datetime.strptime(dateOfBirth, '%Y-%m-%d').date()

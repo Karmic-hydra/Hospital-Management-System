@@ -34,18 +34,14 @@ def index():
     return render_template('index.html')
 
 
-# Login route - handles authentication
-# This part is tricky - need to validate credentials properly!
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     # If already logged in, redirect to home
     if current_user.is_authenticated:
         return redirect(url_for('auth.index'))
     
-    # Check if this is a POST request (form submission)
     requestMethod = request.method
     if requestMethod == 'POST':
-        # Get form data and clean it
         inputUsername = request.form.get('username', '').strip()
         inputPassword = request.form.get('password', '').strip()
         
@@ -58,7 +54,6 @@ def login():
         # Try to find user in database
         foundUser = User.query.filter_by(username=inputUsername).first()
         
-        # Debugging is important here !!!!
         if foundUser is not None:
             passwordIsCorrect = foundUser.check_password(inputPassword)
             
@@ -120,37 +115,33 @@ def register():
         bloodGroup = request.form.get('blood_group', '').strip()
         emergencyContact = request.form.get('emergency_contact', '').strip()
         
-        # This part is tricky - checking if all required fields are filled
         if not all([formUsername, formEmail, formPassword, confirmPassword, fullName, phoneNumber]):
             flash('Please fill in all required fields.', 'danger')
             return render_template('auth/register.html')
         
-        # Check password match
+        
         passwordsMatch = (formPassword == confirmPassword)
         if not passwordsMatch:
             flash('Passwords do not match.', 'danger')
             return render_template('auth/register.html')
         
-        # Password length validation
+        
         passwordLength = len(formPassword)
         if passwordLength < 6:
             flash('Password must be at least 6 characters long.', 'danger')
             return render_template('auth/register.html')
         
-        # Check if username taken
+        
         existingUser = User.query.filter_by(username=formUsername).first()
         if existingUser is not None:
             flash('Username already exists.', 'danger')
             return render_template('auth/register.html')
         
-        # Check if email taken
         existingEmail = User.query.filter_by(email=formEmail).first()
         if existingEmail:
             flash('Email already registered.', 'danger')
             return render_template('auth/register.html')
         
-        # All validation passed, create account
-        # Debugging is important here !!!!
         try:
             newUser = User(
                 username=formUsername,
@@ -187,7 +178,7 @@ def register():
             return redirect(url_for('auth.login'))
         
         except Exception as registrationError:
-            # Something went wrong, rollback
+            # kuch hua toh rollback kar do 
             db.session.rollback()
             flash('An error occurred during registration. Please try again.', 'danger')
             print(f"Registration error: {registrationError}")  # For debugging
