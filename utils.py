@@ -8,26 +8,22 @@ from datetime import datetime, timedelta, time
 # Setup function for initial data
 def create_admin():
     """Create admin user if it doesn't exist"""
-    # Check if admin already exists - using camelCase
+    # Check if admin already exists 
     existingAdmin = User.query.filter_by(username='admin').first()
-    
-    # Only create if not found
     if existingAdmin is None:
-        # Create new admin user object
         newAdmin = User(
             username='admin',
             email='admin@hospital.com',
             role='admin'
         )
-        # Set password - this part is tricky!
+        # Set password 
         newAdmin.set_password('admin123')  # Change this in production
-        
-        # Add to database session
+    
         db.session.add(newAdmin)
         db.session.commit()
         print("Admin user created successfully!")
     
-    # Create default departments if they don't exist
+    # default departments 
     departmentsList = {
         'Cardiology': 'Heart and cardiovascular system',
         'Neurology': 'Brain and nervous system',
@@ -39,9 +35,9 @@ def create_admin():
         'Ophthalmology': 'Eye care and vision',
     }
     
-    # Loop through departments and create if missing
+    
     for deptName, deptDescription in departmentsList.items():
-        # Check if department exists
+        
         existingDept = Department.query.filter_by(name=deptName).first()
         
         if existingDept is None:
@@ -49,16 +45,13 @@ def create_admin():
             newDept = Department(name=deptName, description=deptDescription)
             db.session.add(newDept)
     
-    # Commit all changes at once
     db.session.commit()
     
-    # Create sample doctors if none exist
     create_sample_data()
 
 
 def create_sample_data():
     """Create sample doctors and patients for testing"""
-    # Check if we already have doctors
     existingDoctors = Doctor.query.count()
     if existingDoctors > 0:
         return  # Data already exists
@@ -66,24 +59,24 @@ def create_sample_data():
     # Sample doctors data
     sampleDoctors = [
         {'username': 'dr.smith', 'email': 'dr.smith@hospital.com', 'password': 'doctor123',
-         'full_name': 'Dr. John Smith', 'specialization': 'Cardiologist', 'department': 'Cardiology',
-         'phone': '9876543210', 'qualification': 'MBBS, MD Cardiology', 'experience': 15, 'fee': 500.0},
+        'full_name': 'Dr. John Smith', 'specialization': 'Cardiologist', 'department': 'Cardiology',
+        'phone': '9876543210', 'qualification': 'MBBS, MD Cardiology', 'experience': 15, 'fee': 500.0},
         
         {'username': 'dr.patel', 'email': 'dr.patel@hospital.com', 'password': 'doctor123',
-         'full_name': 'Dr. Priya Patel', 'specialization': 'Neurologist', 'department': 'Neurology',
-         'phone': '9876543211', 'qualification': 'MBBS, MD Neurology', 'experience': 12, 'fee': 600.0},
+        'full_name': 'Dr. Priya Patel', 'specialization': 'Neurologist', 'department': 'Neurology',
+        'phone': '9876543211', 'qualification': 'MBBS, MD Neurology', 'experience': 12, 'fee': 600.0},
         
         {'username': 'dr.kumar', 'email': 'dr.kumar@hospital.com', 'password': 'doctor123',
-         'full_name': 'Dr. Raj Kumar', 'specialization': 'Orthopedic Surgeon', 'department': 'Orthopedics',
-         'phone': '9876543212', 'qualification': 'MBBS, MS Orthopedics', 'experience': 10, 'fee': 450.0},
+        'full_name': 'Dr. Raj Kumar', 'specialization': 'Orthopedic Surgeon', 'department': 'Orthopedics',
+        'phone': '9876543212', 'qualification': 'MBBS, MS Orthopedics', 'experience': 10, 'fee': 450.0},
         
         {'username': 'dr.sharma', 'email': 'dr.sharma@hospital.com', 'password': 'doctor123',
-         'full_name': 'Dr. Anjali Sharma', 'specialization': 'Pediatrician', 'department': 'Pediatrics',
-         'phone': '9876543213', 'qualification': 'MBBS, MD Pediatrics', 'experience': 8, 'fee': 400.0},
+        'full_name': 'Dr. Anjali Sharma', 'specialization': 'Pediatrician', 'department': 'Pediatrics',
+        'phone': '9876543213', 'qualification': 'MBBS, MD Pediatrics', 'experience': 8, 'fee': 400.0},
         
         {'username': 'dr.gupta', 'email': 'dr.gupta@hospital.com', 'password': 'doctor123',
-         'full_name': 'Dr. Amit Gupta', 'specialization': 'General Physician', 'department': 'General Medicine',
-         'phone': '9876543214', 'qualification': 'MBBS, MD Medicine', 'experience': 20, 'fee': 350.0},
+        'full_name': 'Dr. Amit Gupta', 'specialization': 'General Physician', 'department': 'General Medicine',
+        'phone': '9876543214', 'qualification': 'MBBS, MD Medicine', 'experience': 20, 'fee': 350.0},
     ]
     
     # Create doctors
@@ -98,10 +91,8 @@ def create_sample_data():
         db.session.add(newUser)
         db.session.flush()
         
-        # Get department
         dept = Department.query.filter_by(name=docData['department']).first()
         
-        # Create doctor profile
         newDoctor = Doctor(
             user_id=newUser.id,
             full_name=docData['full_name'],
@@ -131,20 +122,20 @@ def create_sample_data():
     # Sample patients data
     samplePatients = [
         {'username': 'patient1', 'email': 'patient1@email.com', 'password': 'patient123',
-         'full_name': 'Rahul Verma', 'phone': '9123456780', 'dob': '1990-05-15',
-         'gender': 'Male', 'blood_group': 'O+', 'address': '123 MG Road, Mumbai'},
+        'full_name': 'Rahul Verma', 'phone': '9123456780', 'dob': '1990-05-15',
+        'gender': 'Male', 'blood_group': 'O+', 'address': '123 MG Road, Mumbai'},
         
         {'username': 'patient2', 'email': 'patient2@email.com', 'password': 'patient123',
-         'full_name': 'Sneha Reddy', 'phone': '9123456781', 'dob': '1995-08-20',
-         'gender': 'Female', 'blood_group': 'A+', 'address': '456 Park Street, Delhi'},
+        'full_name': 'Sneha Reddy', 'phone': '9123456781', 'dob': '1995-08-20',
+        'gender': 'Female', 'blood_group': 'A+', 'address': '456 Park Street, Delhi'},
         
         {'username': 'patient3', 'email': 'patient3@email.com', 'password': 'patient123',
-         'full_name': 'Arjun Singh', 'phone': '9123456782', 'dob': '1988-12-10',
-         'gender': 'Male', 'blood_group': 'B+', 'address': '789 Brigade Road, Bangalore'},
+        'full_name': 'Arjun Singh', 'phone': '9123456782', 'dob': '1988-12-10',
+        'gender': 'Male', 'blood_group': 'B+', 'address': '789 Brigade Road, Bangalore'},
         
         {'username': 'patient4', 'email': 'patient4@email.com', 'password': 'patient123',
-         'full_name': 'Pooja Iyer', 'phone': '9123456783', 'dob': '1992-03-25',
-         'gender': 'Female', 'blood_group': 'AB+', 'address': '321 Anna Salai, Chennai'},
+        'full_name': 'Pooja Iyer', 'phone': '9123456783', 'dob': '1992-03-25',
+        'gender': 'Female', 'blood_group': 'AB+', 'address': '321 Anna Salai, Chennai'},
     ]
     
     # Create patients
@@ -162,7 +153,6 @@ def create_sample_data():
         # Parse date of birth
         dob = datetime.strptime(patData['dob'], '%Y-%m-%d').date()
         
-        # Create patient profile
         newPatient = Patient(
             user_id=newUser.id,
             full_name=patData['full_name'],
@@ -174,7 +164,7 @@ def create_sample_data():
         )
         db.session.add(newPatient)
     
-    # Commit all sample data
+    # Commit all 
     db.session.commit()
     print("Sample doctors and patients created successfully!")
 

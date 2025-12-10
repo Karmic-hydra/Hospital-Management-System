@@ -64,13 +64,13 @@ def dashboard():
         departmentStats.append(deptInfo)
     
     return render_template('admin/dashboard.html',
-                         total_doctors=activeDoctorsCount,
-                         total_patients=activePatientsCount,
-                         total_appointments=totalAppointments,
-                         today_appointments=todayAppointments,
-                         upcoming_appointments=upcomingBookings,
-                         recent_patients=recentPatientsList,
-                         dept_stats=departmentStats)
+                        total_doctors=activeDoctorsCount,
+                        total_patients=activePatientsCount,
+                        total_appointments=totalAppointments,
+                        today_appointments=todayAppointments,
+                        upcoming_appointments=upcomingBookings,
+                        recent_patients=recentPatientsList,
+                        dept_stats=departmentStats)
 
 
 @admin_bp.route('/doctors')

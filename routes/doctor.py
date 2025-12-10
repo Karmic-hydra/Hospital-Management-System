@@ -167,8 +167,8 @@ def complete_appointment(appointment_id):
     minFollowUpDate = (selectedAppointment.appointment_date + timedelta(days=1)).isoformat() if selectedAppointment.appointment_date else ''
     
     return render_template('doctor/complete_appointment.html', 
-                         appointment=selectedAppointment,
-                         min_follow_up_date=minFollowUpDate)
+                        appointment=selectedAppointment,
+                        min_follow_up_date=minFollowUpDate)
 
 
 @doctor_bp.route('/appointment/<int:appointment_id>/cancel', methods=['POST'])
@@ -243,8 +243,8 @@ def edit_treatment(appointment_id):
     minFollowUpDate = (appointment.appointment_date + timedelta(days=1)).isoformat() if appointment.appointment_date else ''
     
     return render_template('doctor/edit_treatment.html',
-                         appointment=appointment,
-                         min_follow_up_date=minFollowUpDate)
+                        appointment=appointment,
+                        min_follow_up_date=minFollowUpDate)
 
 
 @doctor_bp.route('/patients')
@@ -281,8 +281,8 @@ def view_patient(patient_id):
     ).order_by(Appointment.appointment_date.desc()).all()
     
     return render_template('doctor/view_patient.html',
-                         patient=patient,
-                         appointments=appointments)
+                        patient=patient,
+                        appointments=appointments)
 
 
 @doctor_bp.route('/availability', methods=['GET', 'POST'])
@@ -354,8 +354,8 @@ def availability():
         })
     
     return render_template('doctor/availability.html',
-                         doctor=doctor,
-                         availability_data=availability_data)
+                        doctor=doctor,
+                        availability_data=availability_data)
 
 
 @doctor_bp.route('/profile', methods=['GET', 'POST'])
